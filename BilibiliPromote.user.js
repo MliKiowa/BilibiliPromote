@@ -34,7 +34,7 @@
             }
         }
     });
-    function doInit() {
+    window.onload = function () {
         document.getElementsByClassName("v-popover-wrap")[3].remove();
         document.getElementsByClassName("v-popover-wrap")[3].remove();
         document.getElementsByClassName("v-popover-wrap")[3].remove();
@@ -44,7 +44,6 @@
         console.log("[BilibiliPromote] 预载-其它美化-删除无用浮窗");
         document.getElementsByClassName("download-entry download-client-trigger")[0].remove();
         console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
-        document.getElementsByClassName("recommended-swipe grid-anchor")[0].remove();
         let SwiperReplaceCss = `@media (min-width: 1560px) and (max-width: 2059.9px) {
         .recommended-container_floor-aside .container>*:nth-of-type(6) {
             margin-top: 40px !important;
@@ -57,9 +56,8 @@
         }
     }`;
         GM_addStyle(SwiperReplaceCss);
+        setTimeout(()=>{document.getElementsByClassName("recommended-swipe grid-anchor")[0].remove();}, 1500);
         console.log("[BilibiliPromote] 预载-主页美化-删除幻灯片(仅1080P适配)");
-    }
-    window.onload = function () {
-        setTimeout(()=>{doInit();}, 500);
+        
     };
 })();
