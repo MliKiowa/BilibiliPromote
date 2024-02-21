@@ -33,4 +33,8 @@
             }
         }
     });
+
+    window.onload = function () {
+        document.getElementsByClassName("storage-box")[0].remove()
+    };
 })();
