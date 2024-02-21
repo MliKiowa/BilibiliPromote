@@ -43,6 +43,13 @@
         }
     }
     window.onload = function () {
+
+        //waitForElementAndExecute(() => { return document.getElementsByClassName("ad-report video-card-ad-small")[0]; }, 2000, () => { document.getElementsByClassName("ad-report video-card-ad-small")[0].remove(); });
+        let AdVideoReplaceCss = `a.ad-report.video-card-ad-small {
+            display: none !important;
+        }`;
+        GM_addStyle(AdVideoReplaceCss);
+        console.log("[BilibiliPromote] 预载-广告-删除");
         if (window.location.href == "https://www.bilibili.com/" || window.location.href == "https://www.bilibili.com")
         {
             for (let k in [0, 1, 2, 4]) {
