@@ -9,6 +9,7 @@
 // @require      https://scriptcat.org/lib/637/1.3.3/ajaxHooker.js
 // @connect      *
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+// @grant        GM_addStyle
 // @grant        unsafeWindow
 // @run-at       document-start
 // ==/UserScript==
@@ -39,5 +40,17 @@
         console.log("[BilibiliPromote] 预载-其它美化-删除无用浮窗");
         document.getElementsByClassName("download-entry download-client-trigger")[0].remove();
         console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
+        document.getElementsByClassName("recommended-swipe grid-anchor")[0].remove();
+        let SwiperReplaceCss = `@media (min-width: 1560px) and (max-width: 2059.9px) {
+            .recommended-container_floor-aside .container>*:nth-of-type(6) {
+                margin-top: 40px !important;
+            }
+        
+            .recommended-container_floor-aside .container>*:nth-of-type(7) {
+                margin-top: 40px !important;
+            }
+        }`;
+        GM_addStyle(SwiperReplaceCss);
+        console.log("[BilibiliPromote] 预载-主页美化-删除幻灯片(仅1080P视频)");
     };
 })();
