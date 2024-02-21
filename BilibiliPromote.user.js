@@ -36,6 +36,11 @@
     });
 
     window.onload = function () {
+        document.getElementsByClassName("v-popover-wrap")[3].remove();
+        document.getElementsByClassName("v-popover-wrap")[3].remove();
+        document.getElementsByClassName("v-popover-wrap")[3].remove();
+        document.getElementsByClassName("v-popover-wrap")[3].remove();
+        console.log("[BilibiliPromote] 预载-标题栏美化-删除无用");
         document.getElementsByClassName("storage-box")[0].remove();
         console.log("[BilibiliPromote] 预载-其它美化-删除无用浮窗");
         document.getElementsByClassName("download-entry download-client-trigger")[0].remove();
