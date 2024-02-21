@@ -22,7 +22,7 @@
     ajaxHooker.hook(async request => {
         let HookURL = new URL(request.url);
         if (HookURL.pathname == "/x/web-interface/wbi/index/top/feed/rcmd") {
-            console.log("[BilibiliPromote] 拦截-视频列表-刷新数据");
+            console.log("[BilibiliPromote] 拦截-视频列表-删除广告");
             request.response = async res => {
                 let data = [];
                 for (let k in res.json.data.item) {
@@ -35,6 +35,9 @@
     });
 
     window.onload = function () {
-        document.getElementsByClassName("storage-box")[0].remove()
+        document.getElementsByClassName("storage-box")[0].remove();
+        console.log("[BilibiliPromote] 预载-其它美化-删除无用浮窗");
+        document.getElementsByClassName("download-entry download-client-trigger")[0].remove();
+        console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
     };
 })();
