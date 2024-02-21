@@ -16,22 +16,45 @@
 
 (function () {
     'use strict';
+    //window = { set: (obj, prop, value) => { console.log(value); obj[prop] = value; } };
+    //let proxy = new Proxy(window, handler);
     ajaxHooker.filter([
         { url: 'api.bilibili.com' },
     ]);
-    function waitForElementAndExecute(elementCode, timeout, customCode) {
-        const targetElement = elementCode();
+    function waitForElementAndExecute(elementCode, customCode, count = 6) {
         if (elementCode()) {
             customCode();
         } else {
-            setTimeout(() => waitForElementAndExecute(elementCode, timeout, customCode), timeout);
+            if (count == 0) {
+                return;
+            }
+
+
+            setTimeout(() => waitForElementAndExecute(elementCode, customCode, count - 1), 3000 - 500 * count);
         }
     }
-    window.onload = function () {
+    async function waitForSelector(selector, execute) {
+        for (let index = 0; index < 5; index++) {
+            await new Promise((resolve, reject) => {
+                console.log("[BilibiliPromote] 元素选择" + selector + "-当前剩余" + (5 - index).toString() + "次,等待元素出现操作...");
+                setTimeout(resolve, 300)
+            });
+            if (document.querySelector(selector) !== null) {
+                console.log("[BilibiliPromote] 元素选择-元素" + selector + "选择成功");
+                await execute(document.querySelector(selector));
+                return true;
+            }
+        }
+        return false;
+    }
+    window.onload = async function () {
         let TargetURL = new URL(window.location.href);
         //waitForElementAndExecute(() => { return document.getElementsByClassName("ad-report video-card-ad-small")[0]; }, 2000, () => { document.getElementsByClassName("ad-report video-card-ad-small")[0].remove(); });
         let AdVideoReplaceCss = `
         .ad-floor-cover.b-img {
+            display: none !important;
+        }
+        div.video-page-game-card-small{
             display: none !important;
         }
         a.ad-report.video-card-ad-small {
@@ -39,7 +62,8 @@
         }`;
         GM_addStyle(AdVideoReplaceCss);
         console.log("[BilibiliPromote] 预载-广告-删除");
-        waitForElementAndExecute(() => { return document.getElementsByClassName("download-entry download-client-trigger")[0]; }, 2000, () => { document.getElementsByClassName("download-entry download-client-trigger")[0].remove(); });
+        await waitForSelector(".download-entry", (ele) => { ele.remove(); });
+        //waitForElementAndExecute(() => { return document.getElementsByClassName("download-entry download-client-trigger")[0]; }, () => { document.getElementsByClassName("download-entry download-client-trigger")[0].remove(); });
         console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
         if (TargetURL.pathname == "/") {
             ajaxHooker.hook(async request => {
@@ -56,11 +80,14 @@
                     }
                 }
             });
-            for (let k in [0, 1, 2, 4]) {
-                waitForElementAndExecute(() => { return document.getElementsByClassName("v-popover-wrap")[3]; }, 2000, () => { document.getElementsByClassName("v-popover-wrap")[3].remove(); });
+            for (let k in [0, 1, 2, 3]) {
+                //document.querySelector(".v-popover-wrap:nth-child(4)")
+                await waitForSelector(".v-popover-wrap:nth-child(4)", (ele) => { ele.remove(); });
+                //waitForElementAndExecute(() => { return document.getElementsByClassName("v-popover-wrap")[3]; }, () => { document.getElementsByClassName("v-popover-wrap")[3].remove(); });
             }
             console.log("[BilibiliPromote] 预载-标题栏美化-删除无用");
-            waitForElementAndExecute(() => { return document.getElementsByClassName("storage-box")[0]; }, 2000, () => { document.getElementsByClassName("storage-box")[0].remove(); });
+            await waitForSelector(".storage-box", (ele) => { ele.remove(); });
+            //waitForElementAndExecute(() => { return document.getElementsByClassName("storage-box")[0]; }, () => { document.getElementsByClassName("storage-box")[0].remove(); });
             console.log("[BilibiliPromote] 预载-其它美化-删除无用浮窗");
 
             let SwiperReplaceCss = `@media (min-width: 1560px) and (max-width: 2059.9px) {
@@ -75,7 +102,8 @@
             }
         }`;
             GM_addStyle(SwiperReplaceCss);
-            waitForElementAndExecute(() => { return document.getElementsByClassName("recommended-swipe grid-anchor")[0]; }, 2000, () => { document.getElementsByClassName("recommended-swipe grid-anchor")[0].remove(); });
+            await waitForSelector("div.recommended-swipe.grid-anchor", (ele) => { ele.remove(); });
+            //waitForElementAndExecute(() => { return document.getElementsByClassName("recommended-swipe grid-anchor")[0]; }, () => { document.getElementsByClassName("recommended-swipe grid-anchor")[0].remove(); });
             console.log("[BilibiliPromote] 预载-主页美化-删除幻灯片(仅1080P适配)");
         };
     }
