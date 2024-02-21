@@ -43,23 +43,23 @@
         }
     }
     window.onload = function () {
-
+        let TargetURL = new URL(window.location.href);
         //waitForElementAndExecute(() => { return document.getElementsByClassName("ad-report video-card-ad-small")[0]; }, 2000, () => { document.getElementsByClassName("ad-report video-card-ad-small")[0].remove(); });
         let AdVideoReplaceCss = `a.ad-report.video-card-ad-small {
             display: none !important;
         }`;
         GM_addStyle(AdVideoReplaceCss);
         console.log("[BilibiliPromote] 预载-广告-删除");
-        if (window.location.href == "https://www.bilibili.com/" || window.location.href == "https://www.bilibili.com")
-        {
+        waitForElementAndExecute(() => { return document.getElementsByClassName("download-entry download-client-trigger")[0]; }, 2000, () => { document.getElementsByClassName("download-entry download-client-trigger")[0].remove(); });
+        console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
+        if (TargetURL.pathname == "/") {
             for (let k in [0, 1, 2, 4]) {
                 waitForElementAndExecute(() => { return document.getElementsByClassName("v-popover-wrap")[3]; }, 2000, () => { document.getElementsByClassName("v-popover-wrap")[3].remove(); });
             }
             console.log("[BilibiliPromote] 预载-标题栏美化-删除无用");
             waitForElementAndExecute(() => { return document.getElementsByClassName("storage-box")[0]; }, 2000, () => { document.getElementsByClassName("storage-box")[0].remove(); });
             console.log("[BilibiliPromote] 预载-其它美化-删除无用浮窗");
-            waitForElementAndExecute(() => { return document.getElementsByClassName("download-entry download-client-trigger")[0]; }, 2000, () => { document.getElementsByClassName("download-entry download-client-trigger")[0].remove(); });
-            console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
+
             let SwiperReplaceCss = `@media (min-width: 1560px) and (max-width: 2059.9px) {
             .recommended-container_floor-aside .container>*:nth-of-type(6) {
                 margin-top: 40px !important;
