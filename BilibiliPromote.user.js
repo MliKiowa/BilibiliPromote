@@ -80,6 +80,8 @@
                     }
                 }
             });
+            await waitForSelector(".vip-wrap", (ele) => { ele.remove(); });
+            console.log("[BilibiliPromote] 预载-标题栏-删除大会员");
             for (let k in [0, 1, 2, 3]) {
                 //document.querySelector(".v-popover-wrap:nth-child(4)")
                 await waitForSelector(".v-popover-wrap:nth-child(4)", (ele) => { ele.remove(); });
