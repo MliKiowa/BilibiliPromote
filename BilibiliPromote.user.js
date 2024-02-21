@@ -19,21 +19,6 @@
     ajaxHooker.filter([
         { url: 'api.bilibili.com' },
     ]);
-
-    ajaxHooker.hook(async request => {
-        let HookURL = new URL(request.url);
-        if (HookURL.pathname == "/x/web-interface/wbi/index/top/feed/rcmd") {
-            console.log("[BilibiliPromote] 拦截-视频列表-删除广告");
-            request.response = async res => {
-                let data = [];
-                for (let k in res.json.data.item) {
-                    if (res.json.data.item[k].id != 0) data.push(res.json.data.item[k]);
-                }
-                res.json.data.item = data;
-                console.log(data);
-            }
-        }
-    });
     function waitForElementAndExecute(elementCode, timeout, customCode) {
         const targetElement = elementCode();
         if (elementCode()) {
@@ -45,7 +30,11 @@
     window.onload = function () {
         let TargetURL = new URL(window.location.href);
         //waitForElementAndExecute(() => { return document.getElementsByClassName("ad-report video-card-ad-small")[0]; }, 2000, () => { document.getElementsByClassName("ad-report video-card-ad-small")[0].remove(); });
-        let AdVideoReplaceCss = `a.ad-report.video-card-ad-small {
+        let AdVideoReplaceCss = `
+        .ad-floor-cover.b-img {
+            display: none !important;
+        }
+        a.ad-report.video-card-ad-small {
             display: none !important;
         }`;
         GM_addStyle(AdVideoReplaceCss);
@@ -53,6 +42,20 @@
         waitForElementAndExecute(() => { return document.getElementsByClassName("download-entry download-client-trigger")[0]; }, 2000, () => { document.getElementsByClassName("download-entry download-client-trigger")[0].remove(); });
         console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
         if (TargetURL.pathname == "/") {
+            ajaxHooker.hook(async request => {
+                let HookURL = new URL(request.url);
+                if (HookURL.pathname == "/x/web-interface/wbi/index/top/feed/rcmd") {
+                    console.log("[BilibiliPromote] 拦截-视频列表-删除广告");
+                    request.response = async res => {
+                        let data = [];
+                        for (let k in res.json.data.item) {
+                            if (res.json.data.item[k].id != 0) data.push(res.json.data.item[k]);
+                        }
+                        res.json.data.item = data;
+                        //console.log(data);
+                    }
+                }
+            });
             for (let k in [0, 1, 2, 4]) {
                 waitForElementAndExecute(() => { return document.getElementsByClassName("v-popover-wrap")[3]; }, 2000, () => { document.getElementsByClassName("v-popover-wrap")[3].remove(); });
             }
