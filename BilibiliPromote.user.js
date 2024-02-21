@@ -45,12 +45,14 @@
             .recommended-container_floor-aside .container>*:nth-of-type(6) {
                 margin-top: 40px !important;
             }
-        
+            .recommended-container_floor-aside .container.is-version8>*:nth-of-type(n + 13) {
+                margin-top: 40px !important;
+            }
             .recommended-container_floor-aside .container>*:nth-of-type(7) {
                 margin-top: 40px !important;
             }
         }`;
         GM_addStyle(SwiperReplaceCss);
-        console.log("[BilibiliPromote] 预载-主页美化-删除幻灯片(仅1080P视频)");
+        console.log("[BilibiliPromote] 预载-主页美化-删除幻灯片(仅1080P适配)");
     };
 })();
