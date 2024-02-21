@@ -60,6 +60,6 @@
         console.log("[BilibiliPromote] 预载-主页美化-删除幻灯片(仅1080P适配)");
     }
     window.onload = function () {
-        setTimeout(500, doInit);
+        setTimeout(()=>{doInit();}, 500);
     };
 })();
