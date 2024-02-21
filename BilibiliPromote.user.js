@@ -43,7 +43,7 @@
         }
     }
     window.onload = function () {
-        if (window.location.href = "https://www.bilibili.com/" || window.location.href = "https://www.bilibili.com")
+        if (window.location.href == "https://www.bilibili.com/" || window.location.href == "https://www.bilibili.com")
         {
             for (let k in [0, 1, 2, 4]) {
                 waitForElementAndExecute(() => { return document.getElementsByClassName("v-popover-wrap")[3]; }, 2000, () => { document.getElementsByClassName("v-popover-wrap")[3].remove(); });
