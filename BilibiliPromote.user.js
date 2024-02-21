@@ -65,6 +65,9 @@
         await waitForSelector(".download-entry", (ele) => { ele.remove(); });
         //waitForElementAndExecute(() => { return document.getElementsByClassName("download-entry download-client-trigger")[0]; }, () => { document.getElementsByClassName("download-entry download-client-trigger")[0].remove(); });
         console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
+        await waitForSelector(".vip-wrap", (ele) => { ele.remove(); });
+        console.log("[BilibiliPromote] 预载-标题栏-删除大会员");
+        
         if (TargetURL.pathname == "/") {
             ajaxHooker.hook(async request => {
                 let HookURL = new URL(request.url);
@@ -80,8 +83,6 @@
                     }
                 }
             });
-            await waitForSelector(".vip-wrap", (ele) => { ele.remove(); });
-            console.log("[BilibiliPromote] 预载-标题栏-删除大会员");
             for (let k in [0, 1, 2, 3]) {
                 //document.querySelector(".v-popover-wrap:nth-child(4)")
                 await waitForSelector(".v-popover-wrap:nth-child(4)", (ele) => { ele.remove(); });
