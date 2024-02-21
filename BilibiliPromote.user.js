@@ -34,15 +34,22 @@
             }
         }
     });
+    function waitForElementAndExecute(elementCode, timeout, customCode) {
+        const targetElement = elementCode();
+        if (elementCode()) {
+            customCode();
+        } else {
+            setTimeout(() => waitForElementAndExecute(elementCode, timeout, customCode), timeout);
+        }
+    }
     window.onload = function () {
-        document.getElementsByClassName("v-popover-wrap")[3].remove();
-        document.getElementsByClassName("v-popover-wrap")[3].remove();
-        document.getElementsByClassName("v-popover-wrap")[3].remove();
-        document.getElementsByClassName("v-popover-wrap")[3].remove();
+        for (let k in [0, 1, 2, 4]) {
+            waitForElementAndExecute(() => { return document.getElementsByClassName("v-popover-wrap")[3]; }, 2000, () => { document.getElementsByClassName("v-popover-wrap")[3].remove(); });
+        }
         console.log("[BilibiliPromote] 预载-标题栏美化-删除无用");
-        document.getElementsByClassName("storage-box")[0].remove();
+        waitForElementAndExecute(() => { return document.getElementsByClassName("storage-box")[0]; }, 2000, () => { document.getElementsByClassName("storage-box")[0].remove(); });
         console.log("[BilibiliPromote] 预载-其它美化-删除无用浮窗");
-        document.getElementsByClassName("download-entry download-client-trigger")[0].remove();
+        waitForElementAndExecute(() => { return document.getElementsByClassName("download-entry download-client-trigger")[0]; }, 2000, () => { document.getElementsByClassName("download-entry download-client-trigger")[0].remove(); });
         console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
         let SwiperReplaceCss = `@media (min-width: 1560px) and (max-width: 2059.9px) {
         .recommended-container_floor-aside .container>*:nth-of-type(6) {
@@ -56,8 +63,8 @@
         }
     }`;
         GM_addStyle(SwiperReplaceCss);
-        setTimeout(()=>{document.getElementsByClassName("recommended-swipe grid-anchor")[0].remove();}, 1500);
+        waitForElementAndExecute(() => { return document.getElementsByClassName("recommended-swipe grid-anchor")[0]; }, 2000, () => { document.getElementsByClassName("recommended-swipe grid-anchor")[0].remove(); });
         console.log("[BilibiliPromote] 预载-主页美化-删除幻灯片(仅1080P适配)");
-        
+
     };
 })();
