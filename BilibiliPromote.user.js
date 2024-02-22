@@ -54,7 +54,8 @@
     }`;
     console.log("[BilibiliPromote] 预载-视频页广告-删除广告");
 
-    let StorageBoxCss = `.storage-box{
+    let StorageBoxCss = `
+    .storage-box{
         display: none !important;
     }`;
     console.log("[BilibiliPromote] 预载-主页浮窗-删除无用浮窗");
@@ -70,7 +71,7 @@
         div.recommended-swipe.grid-anchor{
             display: none !important;
         }
-    }`;
+    `;
     console.log("[BilibiliPromote] 预载-主页幻灯片-移除幻灯片(仅1080P适配)");
     let VipWarpCss = `
     .vip-wrap{
