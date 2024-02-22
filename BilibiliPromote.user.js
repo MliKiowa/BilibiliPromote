@@ -13,102 +13,91 @@
 // @grant        unsafeWindow
 // @run-at       document-start
 // ==/UserScript==
-
 (function () {
     'use strict';
-    //window = { set: (obj, prop, value) => { console.log(value); obj[prop] = value; } };
-    //let proxy = new Proxy(window, handler);
-    ajaxHooker.filter([
-        { url: 'api.bilibili.com' },
-    ]);
-    function waitForElementAndExecute(elementCode, customCode, count = 6) {
-        if (elementCode()) {
-            customCode();
-        } else {
-            if (count == 0) {
-                return;
-            }
-
-
-            setTimeout(() => waitForElementAndExecute(elementCode, customCode, count - 1), 3000 - 500 * count);
-        }
-    }
-    async function waitForSelector(selector, execute) {
-        for (let index = 0; index < 5; index++) {
-            await new Promise((resolve, reject) => {
-                console.log("[BilibiliPromote] 元素选择" + selector + "-当前剩余" + (5 - index).toString() + "次,等待元素出现操作...");
-                setTimeout(resolve, 300)
-            });
-            if (document.querySelector(selector) !== null) {
-                console.log("[BilibiliPromote] 元素选择-元素" + selector + "选择成功");
-                await execute(document.querySelector(selector));
-                return true;
-            }
-        }
-        return false;
-    }
-    window.onload = async function () {
-        let TargetURL = new URL(window.location.href);
-        //waitForElementAndExecute(() => { return document.getElementsByClassName("ad-report video-card-ad-small")[0]; }, 2000, () => { document.getElementsByClassName("ad-report video-card-ad-small")[0].remove(); });
-        let AdVideoReplaceCss = `
-        .ad-floor-cover.b-img {
-            display: none !important;
-        }
-        div.video-page-game-card-small{
-            display: none !important;
-        }
-        a.ad-report.video-card-ad-small {
-            display: none !important;
-        }`;
-        GM_addStyle(AdVideoReplaceCss);
-        console.log("[BilibiliPromote] 预载-广告-删除");
-        await waitForSelector(".download-entry", (ele) => { ele.remove(); });
-        //waitForElementAndExecute(() => { return document.getElementsByClassName("download-entry download-client-trigger")[0]; }, () => { document.getElementsByClassName("download-entry download-client-trigger")[0].remove(); });
-        console.log("[BilibiliPromote] 预载-标题栏美化-删除下载");
-        await waitForSelector(".vip-wrap", (ele) => { ele.remove(); });
-        console.log("[BilibiliPromote] 预载-标题栏-删除大会员");
-        
-        if (TargetURL.pathname == "/") {
-            ajaxHooker.hook(async request => {
-                let HookURL = new URL(request.url);
-                if (HookURL.pathname == "/x/web-interface/wbi/index/top/feed/rcmd") {
-                    console.log("[BilibiliPromote] 拦截-视频列表-删除广告");
-                    request.response = async res => {
-                        let data = [];
-                        for (let k in res.json.data.item) {
-                            if (res.json.data.item[k].id != 0) data.push(res.json.data.item[k]);
+    let TargetURL = new URL(window.location.href);
+    if (TargetURL.pathname == "/") {
+        // 当前在主页 挂载Hook
+        ajaxHooker.filter([
+            { url: 'api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd' },
+        ]);
+        ajaxHooker.hook(async request => {
+            let HookURL = new URL(request.url);
+            if (HookURL.pathname == "/x/web-interface/wbi/index/top/feed/rcmd") {
+                console.log("[BilibiliPromote] 拦截-视频列表-删除广告");
+                request.response = async res => {
+                    let data = [];
+                    for (let k in res.json.data.item) {
+                        if (res.json.data.item[k].id != 0) {
+                            data.push(res.json.data.item[k]);
+                        } else {
+                            data.push(data[0]);//复制一份 保持数据对齐
                         }
-                        res.json.data.item = data;
-                        //console.log(data);
                     }
+                    res.json.data.item = data;
+                    //console.log(data);
                 }
-            });
-            for (let k in [0, 1, 2, 3]) {
-                //document.querySelector(".v-popover-wrap:nth-child(4)")
-                await waitForSelector(".v-popover-wrap:nth-child(4)", (ele) => { ele.remove(); });
-                //waitForElementAndExecute(() => { return document.getElementsByClassName("v-popover-wrap")[3]; }, () => { document.getElementsByClassName("v-popover-wrap")[3].remove(); });
             }
-            console.log("[BilibiliPromote] 预载-标题栏美化-删除无用");
-            await waitForSelector(".storage-box", (ele) => { ele.remove(); });
-            //waitForElementAndExecute(() => { return document.getElementsByClassName("storage-box")[0]; }, () => { document.getElementsByClassName("storage-box")[0].remove(); });
-            console.log("[BilibiliPromote] 预载-其它美化-删除无用浮窗");
-
-            let SwiperReplaceCss = `@media (min-width: 1560px) and (max-width: 2059.9px) {
-            .recommended-container_floor-aside .container>*:nth-of-type(6) {
-                margin-top: 40px !important;
-            }
-            .recommended-container_floor-aside .container.is-version8>*:nth-of-type(n + 13) {
-                margin-top: 40px !important;
-            }
-            .recommended-container_floor-aside .container>*:nth-of-type(7) {
-                margin-top: 40px !important;
-            }
-        }`;
-            GM_addStyle(SwiperReplaceCss);
-            await waitForSelector("div.recommended-swipe.grid-anchor", (ele) => { ele.remove(); });
-            //waitForElementAndExecute(() => { return document.getElementsByClassName("recommended-swipe grid-anchor")[0]; }, () => { document.getElementsByClassName("recommended-swipe grid-anchor")[0].remove(); });
-            console.log("[BilibiliPromote] 预载-主页美化-删除幻灯片(仅1080P适配)");
-        };
+        });
     }
+
+    // 预加载样式
+    let AdVideoCss = `.ad-floor-cover.b-img {
+        display: none !important;
+    }
+    div.video-page-game-card-small{
+        display: none !important;
+    }
+    a.ad-report.video-card-ad-small {
+        display: none !important;
+    }`;
+    console.log("[BilibiliPromote] 预载-视频页广告-删除广告");
+
+    let StorageBoxCss = `.storage-box{
+        display: none !important;
+    }`;
+    console.log("[BilibiliPromote] 预载-主页浮窗-删除无用浮窗");
+
+
+    let SwiperCss = `@media (min-width: 1560px) and (max-width: 2059.9px) {
+        .recommended-container_floor-aside .container>*:nth-of-type(6) {
+            margin-top: 40px !important;
+        }
+        .recommended-container_floor-aside .container.is-version8>*:nth-of-type(n + 13) {
+            margin-top: 40px !important;
+        }
+        .recommended-container_floor-aside .container>*:nth-of-type(7) {
+            margin-top: 40px !important;
+        }
+        div.recommended-swipe.grid-anchor{
+            display: none !important;
+        }
+    }`;
+    console.log("[BilibiliPromote] 预载-主页幻灯片-移除幻灯片(仅1080P适配)");
+    let VipWarpCss = `.vip-wrap{
+        display: none !important;
+    }`;
+
+    let TittleDisplayCss = `ul.left-entry > li:nth-child(n+4):nth-child(-n+7){
+        display: none !important;
+    }`;
+    console.log("[BilibiliPromote] 预载-主页导航栏-删除无用导航");
+
+    let DownloadEntryCss = `.download-entry{
+        display: none !important;
+    }`;
+    console.log("[BilibiliPromote] 预载-主页标题栏-删除下载入口");
+    //li.right-entry-item.right-entry-item--upload
+    let UploadEntryCss = `li.right-entry-item.right-entry-item--upload{
+        display: none !important;
+    }`;
+    console.log("[BilibiliPromote] 预载-主页标题栏-删除投稿入口");
+    // 预载入批量处理
+    GM_addStyle(AdVideoCss + SwiperCss + StorageBoxCss + VipWarpCss + TittleDisplayCss + DownloadEntryCss + UploadEntryCss);
+
+    // 以下是需要等待 Dom加载完毕
+    document.addEventListener("DOMContentLoaded", (event) => {
+        console.log("[BilibiliPromote] DOMContentLoaded...");
+    });
 
 })();
