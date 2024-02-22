@@ -24,10 +24,13 @@
             { url: 'api.bilibili.com/pgc/web/variety/feed' },
             { url: 'api.live.bilibili.com/xlive/web-interface/v1/webMain/getMoreRecList' },
             { url: 'api.bilibili.com/pgc/web/timeline/v2' },
-            { url: 'api.bilibili.com/x/web-interface/dynamic/region' }
+            { url: 'api.bilibili.com/x/web-interface/dynamic/region' },
+            { url: 'manga.bilibili.com/twirp/comic.v1.Comic/GetClassPageSixComics' },
+            { url: 'api.bilibili.com/x/web-show/wbi/res/locs' }
         ]);
         ajaxHooker.hook(async request => {
             let HookURL = new URL(request.url);
+            console.log("[BilibiliPromote] 拦截URL:" + HookURL.pathname);
             if (HookURL.pathname == "/x/web-interface/wbi/index/top/feed/rcmd") {
                 console.log("[BilibiliPromote] 拦截-视频列表-删除广告");
                 request.response = async res => {
@@ -41,7 +44,7 @@
                         }
                     }
                     res.json.data.item = data;
-                    //console.log(res.json);
+                    console.log(res.json);
                 }
             }
             if (HookURL.pathname == "/pugv/app/web/floor/switch") {
@@ -77,8 +80,25 @@
             if (HookURL.pathname == "/x/web-interface/dynamic/region") {
                 console.log("[BilibiliPromote] 拦截-推荐列表-删除其它推荐");
                 request.response = async res => {
+                    if (res.json.code != 0 && res.json.code != 200) return;
                     res.json.data.archives = []; //列表置空
                     res.json.data.page.size = 0;
+                    console.log(res.json);
+                }
+
+            }
+            if (HookURL.pathname == "/twirp/comic.v1.Comic/GetClassPageSixComics") {
+                console.log("[BilibiliPromote] 拦截-推荐列表-删除漫画推荐");
+                request.response = async res => {
+                    if (res.json.code != 0 && res.json.code != 200) return;
+                    res.json.data.roll_six_comics = []; //列表置空
+                    console.log(res.json);
+                }
+            }
+            if (HookURL.pathname == "/x/web-show/wbi/res/locs") {
+                console.log("[BilibiliPromote] 拦截-推荐列表-删除赛事推荐");
+                request.response = async res => {
+                    res.json.data[0] = []; //列表置空
                     console.log(res.json);
                 }
             }
