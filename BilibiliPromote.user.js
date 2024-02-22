@@ -70,6 +70,7 @@
                 }
             }
             if (HookURL.pathname == "/pgc/web/timeline/v2") {
+                return; //不破坏看番
                 console.log("[BilibiliPromote] 拦截-推荐列表-删除番剧推荐");
                 request.response = async res => {
                     res.json.result.latest = []; //列表置空
@@ -78,7 +79,7 @@
                 }
             }
             if (HookURL.pathname == "/x/web-interface/dynamic/region") {
-                console.log("[BilibiliPromote] 拦截-推荐列表-删除其它推荐");
+                console.log("[BilibiliPromote] 拦截-推荐列表-删除电影纪录片推荐");
                 request.response = async res => {
                     if (res.json.code != 0 && res.json.code != 200) return;
                     res.json.data.archives = []; //列表置空
@@ -89,6 +90,7 @@
             }
             if (HookURL.pathname == "/twirp/comic.v1.Comic/GetClassPageSixComics") {
                 console.log("[BilibiliPromote] 拦截-推荐列表-删除漫画推荐");
+                return; //不破坏漫画
                 request.response = async res => {
                     if (res.json.code != 0 && res.json.code != 200) return;
                     res.json.data.roll_six_comics = []; //列表置空
@@ -98,7 +100,9 @@
             if (HookURL.pathname == "/x/web-show/wbi/res/locs") {
                 console.log("[BilibiliPromote] 拦截-推荐列表-删除赛事推荐");
                 request.response = async res => {
-                    res.json.data[0] = []; //列表置空
+                    for (let k in res.json.data) {
+                        res.json.data[k] = [];// 全部列表置空 不遍历有漏的
+                    }
                     console.log(res.json);
                 }
             }
