@@ -20,6 +20,11 @@
         // 当前在主页 挂载Hook
         ajaxHooker.filter([
             { url: 'api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd' },
+            { url: 'api.bilibili.com/pugv/app/web/floor/switch' },
+            { url: 'api.bilibili.com/pgc/web/variety/feed' },
+            { url: 'api.live.bilibili.com/xlive/web-interface/v1/webMain/getMoreRecList' },
+            { url: 'api.bilibili.com/pgc/web/timeline/v2' },
+            { url: 'api.bilibili.com/x/web-interface/dynamic/region' }
         ]);
         ajaxHooker.hook(async request => {
             let HookURL = new URL(request.url);
@@ -27,6 +32,7 @@
                 console.log("[BilibiliPromote] 拦截-视频列表-删除广告");
                 request.response = async res => {
                     let data = [];
+                    res.json.data.side_bar_column = []; //置空 我忘了是干嘛的
                     for (let k in res.json.data.item) {
                         if (res.json.data.item[k].id != 0) {
                             data.push(res.json.data.item[k]);
@@ -35,7 +41,45 @@
                         }
                     }
                     res.json.data.item = data;
-                    //console.log(data);
+                    //console.log(res.json);
+                }
+            }
+            if (HookURL.pathname == "/pugv/app/web/floor/switch") {
+                console.log("[BilibiliPromote] 拦截-推荐列表-删除推课");
+                request.response = async res => {
+                    res.json.data.season = []; //列表置空
+                    console.log(res.json);
+                }
+            }
+            if (HookURL.pathname == "/pgc/web/variety/feed") {
+                console.log("[BilibiliPromote] 拦截-推荐列表-删除杂类推荐");
+                request.response = async res => {
+                    res.json.data.cursor = "0";
+                    res.json.data.list = []; //列表置空
+                    console.log(res.json);
+                }
+            }
+            if (HookURL.pathname == "/xlive/web-interface/v1/webMain/getMoreRecList") {
+                console.log("[BilibiliPromote] 拦截-推荐列表-删除直播推荐");
+                request.response = async res => {
+                    res.json.data.recommend_room_list = []; //列表置空
+                    console.log(res.json);
+                }
+            }
+            if (HookURL.pathname == "/pgc/web/timeline/v2") {
+                console.log("[BilibiliPromote] 拦截-推荐列表-删除番剧推荐");
+                request.response = async res => {
+                    res.json.result.latest = []; //列表置空
+                    res.json.result.timeline = [];
+                    console.log(res.json);
+                }
+            }
+            if (HookURL.pathname == "/x/web-interface/dynamic/region") {
+                console.log("[BilibiliPromote] 拦截-推荐列表-删除其它推荐");
+                request.response = async res => {
+                    res.json.data.archives = []; //列表置空
+                    res.json.data.page.size = 0;
+                    console.log(res.json);
                 }
             }
         });
