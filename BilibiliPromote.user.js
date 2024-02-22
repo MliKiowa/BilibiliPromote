@@ -128,8 +128,11 @@
     }`;
     console.log("[BilibiliPromote] 预载-主页浮窗-删除无用浮窗");
 
-
+    // 此处过滤了主页直播
     let SwiperCss = `
+        .bili-live-card .is-rcmd {
+            display: none !important;
+        }
         .recommended-container_floor-aside .container.is-version8>*:nth-of-type(n + 13) {
             margin-top: 40px !important;
         }
@@ -148,6 +151,9 @@
 
     let TittleDisplayCss = `
     ul.left-entry > li:nth-child(n+4):nth-child(-n+7){
+        display: none !important;
+    }
+    div.nav-link > ul > li:nth-child(n+5){
         display: none !important;
     }`;
     console.log("[BilibiliPromote] 预载-主页导航栏-删除无用导航");
