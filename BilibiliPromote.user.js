@@ -42,7 +42,8 @@
     }
 
     // 预加载样式
-    let AdVideoCss = `.ad-floor-cover.b-img {
+    let AdVideoCss = `
+    .ad-floor-cover.b-img {
         display: none !important;
     }
     div.video-page-game-card-small{
@@ -59,10 +60,7 @@
     console.log("[BilibiliPromote] 预载-主页浮窗-删除无用浮窗");
 
 
-    let SwiperCss = `@media (min-width: 1560px) and (max-width: 2059.9px) {
-        .recommended-container_floor-aside .container>*:nth-of-type(6) {
-            margin-top: 40px !important;
-        }
+    let SwiperCss = `
         .recommended-container_floor-aside .container.is-version8>*:nth-of-type(n + 13) {
             margin-top: 40px !important;
         }
@@ -74,21 +72,25 @@
         }
     }`;
     console.log("[BilibiliPromote] 预载-主页幻灯片-移除幻灯片(仅1080P适配)");
-    let VipWarpCss = `.vip-wrap{
+    let VipWarpCss = `
+    .vip-wrap{
         display: none !important;
     }`;
 
-    let TittleDisplayCss = `ul.left-entry > li:nth-child(n+4):nth-child(-n+7){
+    let TittleDisplayCss = `
+    ul.left-entry > li:nth-child(n+4):nth-child(-n+7){
         display: none !important;
     }`;
     console.log("[BilibiliPromote] 预载-主页导航栏-删除无用导航");
 
-    let DownloadEntryCss = `.download-entry{
+    let DownloadEntryCss = `
+    .download-entry{
         display: none !important;
     }`;
     console.log("[BilibiliPromote] 预载-主页标题栏-删除下载入口");
     //li.right-entry-item.right-entry-item--upload
-    let UploadEntryCss = `li.right-entry-item.right-entry-item--upload{
+    let UploadEntryCss = `
+    li.right-entry-item.right-entry-item--upload{
         display: none !important;
     }`;
     console.log("[BilibiliPromote] 预载-主页标题栏-删除投稿入口");
