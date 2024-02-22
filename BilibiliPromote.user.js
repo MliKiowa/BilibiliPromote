@@ -30,7 +30,7 @@
         ]);
         ajaxHooker.hook(async request => {
             let HookURL = new URL(request.url);
-            console.log("[BilibiliPromote] 拦截URL:" + HookURL.pathname);
+            //console.log("[BilibiliPromote] 拦截URL:" + HookURL.pathname);
             if (HookURL.pathname == "/x/web-interface/wbi/index/top/feed/rcmd") {
                 console.log("[BilibiliPromote] 拦截-视频列表-删除广告");
                 request.response = async res => {
@@ -44,14 +44,14 @@
                         }
                     }
                     res.json.data.item = data;
-                    console.log(res.json);
+                    //console.log(res.json);
                 }
             }
             if (HookURL.pathname == "/pugv/app/web/floor/switch") {
                 console.log("[BilibiliPromote] 拦截-推荐列表-删除推课");
                 request.response = async res => {
                     res.json.data.season = []; //列表置空
-                    console.log(res.json);
+                    //console.log(res.json);
                 }
             }
             if (HookURL.pathname == "/pgc/web/variety/feed") {
@@ -59,14 +59,14 @@
                 request.response = async res => {
                     res.json.data.cursor = "0";
                     res.json.data.list = []; //列表置空
-                    console.log(res.json);
+                    //console.log(res.json);
                 }
             }
             if (HookURL.pathname == "/xlive/web-interface/v1/webMain/getMoreRecList") {
                 console.log("[BilibiliPromote] 拦截-推荐列表-删除直播推荐");
                 request.response = async res => {
                     res.json.data.recommend_room_list = []; //列表置空
-                    console.log(res.json);
+                    //console.log(res.json);
                 }
             }
             if (HookURL.pathname == "/pgc/web/timeline/v2") {
@@ -75,7 +75,7 @@
                 request.response = async res => {
                     res.json.result.latest = []; //列表置空
                     res.json.result.timeline = [];
-                    console.log(res.json);
+                    //console.log(res.json);
                 }
             }
             if (HookURL.pathname == "/x/web-interface/dynamic/region") {
@@ -84,17 +84,17 @@
                     if (res.json.code != 0 && res.json.code != 200) return;
                     res.json.data.archives = []; //列表置空
                     res.json.data.page.size = 0;
-                    console.log(res.json);
+                    //console.log(res.json);
                 }
 
             }
             if (HookURL.pathname == "/twirp/comic.v1.Comic/GetClassPageSixComics") {
-                console.log("[BilibiliPromote] 拦截-推荐列表-删除漫画推荐");
                 return; //不破坏漫画
+                console.log("[BilibiliPromote] 拦截-推荐列表-删除漫画推荐");
                 request.response = async res => {
                     if (res.json.code != 0 && res.json.code != 200) return;
                     res.json.data.roll_six_comics = []; //列表置空
-                    console.log(res.json);
+                    //console.log(res.json);
                 }
             }
             if (HookURL.pathname == "/x/web-show/wbi/res/locs") {
@@ -103,7 +103,7 @@
                     for (let k in res.json.data) {
                         res.json.data[k] = [];// 全部列表置空 不遍历有漏的
                     }
-                    console.log(res.json);
+                    //console.log(res.json);
                 }
             }
         });
@@ -163,8 +163,20 @@
         display: none !important;
     }`;
     console.log("[BilibiliPromote] 预载-主页标题栏-删除投稿入口");
+    let VideoFllowCss = `
+    .bpx-player-top-left-follow
+    {
+        display: none !important;
+    }`;
+
+    console.log("[BilibiliPromote] 预载-视频播放器-删除多余关注")
+    let AvatarVipCss = `
+    #biliMainHeader > div > div > ul.right-entry > li.v-popover-wrap.header-avatar-wrap > div.v-popover.is-bottom > div > div > div.vip-entry-containter{
+        display: none !important;
+    }`;
+    console.log("[BilibiliPromote] 预载-主页标题栏-删除官方广告")
     // 预载入批量处理
-    GM_addStyle(AdVideoCss + SwiperCss + StorageBoxCss + VipWarpCss + TittleDisplayCss + DownloadEntryCss + UploadEntryCss);
+    GM_addStyle(AdVideoCss + SwiperCss + StorageBoxCss + VipWarpCss + TittleDisplayCss + DownloadEntryCss + UploadEntryCss + VideoFllowCss + AvatarVipCss);
 
     // 以下是需要等待 Dom加载完毕
     document.addEventListener("DOMContentLoaded", (event) => {
