@@ -1,6 +1,7 @@
 # BilibiliPromote
 BilibiliPromote 脚本 用于增强Bilibili网页体验
 # Function
+- [x] 过滤推荐分区内容广告 电视剧 赛事等 保留漫画与动漫推荐
 - [x] 过滤推荐流广告
 - [x] 过滤视频页广告
 - [x] 清理标题栏
